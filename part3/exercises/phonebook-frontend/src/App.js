@@ -17,6 +17,7 @@ function App() {
 
   useEffect(() => {
     personService.getAll().then(initialPersons => {
+      console.log(initialPersons)
       setPersons(initialPersons)
       setPersonsToShow(initialPersons)
     });
@@ -24,6 +25,7 @@ function App() {
 
 
   const addPerson = (event) => {
+    console.log(event)
     event.preventDefault();
     const nameInputValue = nameInput.current.value;
     const phoneInputValue = phoneInput.current.value;
@@ -31,17 +33,17 @@ function App() {
     //if (persons.filter(person => person.name === nameInputValue).length > 0) return;
 
     const newPerson = {
-      id: persons.length + 1,
+      //id: persons.length + 1,
       name: nameInputValue,
       number: phoneInputValue,
     }
 
-    const p = persons.filter(p => p.name.toLowerCase() === newPerson.name.toLowerCase());
-    if (p.length > 0) {
+    const personAlreadyExists = persons.find(p => p.name.toLowerCase() === newPerson.name.toLowerCase());
+    if (personAlreadyExists) {
       if (window.confirm('Dude already in list, update number?')) {
         const person = {
-          id: p[0].id,
-          name: p[0].name,
+          id: persons.filter(p => p.name.toLowerCase() === newPerson.name.toLowerCase())[0].id,
+          name: nameInputValue,
           number: phoneInputValue
         }
         personService.update(person.id, person).then(updatedPerson => {

@@ -12,7 +12,7 @@ app.use(express.static('build'))
 
 app.use(cors())
 
-const Person = require('models/persons')
+const Person = require('./models/person')
 
 // const requestLogger = (request, response, next) => {
 //     console.log('Method:', request.method)
@@ -27,7 +27,6 @@ const Person = require('models/persons')
 
 // app.use(requestLogger)
 app.use(
-
     morgan(function (tokens, req, res) {
         return [
           tokens.method(req, res),
@@ -40,28 +39,29 @@ app.use(
 
 )
 
-persons = [
-    { 
-      "id": 1,
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": 2,
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": 3,
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": 4,
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
+
+// persons = [
+//     { 
+//       "id": 1,
+//       "name": "Arto Hellas", 
+//       "number": "040-123456"
+//     },
+//     { 
+//       "id": 2,
+//       "name": "Ada Lovelace", 
+//       "number": "39-44-5323523"
+//     },
+//     { 
+//       "id": 3,
+//       "name": "Dan Abramov", 
+//       "number": "12-43-234345"
+//     },
+//     { 
+//       "id": 4,
+//       "name": "Mary Poppendieck", 
+//       "number": "39-23-6423122"
+//     }
+// ]
 
 app.get('/', (request, response) => {
     response.send('<h1>API</h1>')
@@ -78,51 +78,65 @@ app.get('/info', (request, response) => {
 });
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(person => {
+        console.log(response.json(person))
+        response.json(person)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id);
-    const person = persons.find(person => person.id === id)
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(400).json({
-            error: 'no person found'
-        })
-    }
+    Person.findById(request.params.id).then(person => {
+        if (person) {
+            response.json(person)
+        } else {
+            response.status(404).end()
+        }
+    }).catch(error => {
+        console.log(error)
+        response.status(400).send({ error: 'malformatted id' })
+      })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id);
-    const persons  = persons.filter(person => person.id !== id)
+    Person.findByIdAndRemove(request.params.id).then(result => {
+        response.status(204).end()
 
-    response.status(204).end()
+    }).catch(error => {
+        console.log(error)
+    })
 })
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-
-    const personAlreadyExists = persons.find(p => p.name.toLowerCase() === body.name.toLowerCase())
-    if (!body.name || !body.number || personAlreadyExists) {
-        return response.status(400).json({
-            error: 'name or number mising, or name most be unique'
-        })
+    if (!body.name || !body.number) {
+        return response.status(400).json({ error: 'content missing' })
     }
 
-    const maxId = persons.length > 0 ? 
-    Math.max(...persons.map(person => person.id))
-    : 0
-
-    const person = {
+    const person = new Person({
         name: body.name,
-        number: body.number,
-        id: maxId + 1
-    }
+        number: body.number
+    })
 
-    persons = persons.concat(person)
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
+})
 
-    response.json(person)
+app.put('/api/persons/:id', (request, response) => {
+    const body = request.body
+
+    const person = new Person({
+        name: body.name,
+        number: body.number
+    })
+    console.log(request.params.id)
+    console.log(person.name)
+    console.log(person.number)
+    Person.findByIdAndUpdate(request.params.id, person, { new: true }).then(updatedPerson => {
+        response.json(updatedPerson)
+    }).catch(error => {
+        //console.log(error)
+    })
 })
 
 const unknownEndpoint = (request, response) => {
