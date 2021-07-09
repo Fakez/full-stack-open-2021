@@ -41,13 +41,13 @@ function App() {
   const [username, setUsername] = useState('jamil');
   const [password, setPassword] = useState('12');
 
-  useEffect(async () => {
-    const getUserBlogs = async () => {
-      const userResponse = await userService.getUserById(user.id);
-      setUserBlogs(userResponse.blogs);
-    }
-    user && getUserBlogs();
-  }, [user])
+  // useEffect(async () => {
+  //   const getUserBlogs = async () => {
+  //     const userResponse = await userService.getUserById(user.id);
+  //     setUserBlogs(userResponse.blogs);
+  //   }
+  //   user && getUserBlogs();
+  // }, [user])
   
   const handleFormFieldChange = (e) => {
     e.target.name === 'username' ? 
@@ -59,7 +59,10 @@ function App() {
     e.preventDefault();
     try {
       const user = await loginService.login({username: username, password: password});
+      const userData = await userService.getUserById(user.id);
       setUser(user);
+      setUserBlogs(userData.blogs);
+
       username = '';
       password = '';
     } catch (exception) {
