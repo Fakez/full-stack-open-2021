@@ -6,4 +6,8 @@ const getUserById = async id => {
     return response.data
 }
 
-export default { getUserById }
+const exports = {
+    getUserById
+};
+
+export default exports;

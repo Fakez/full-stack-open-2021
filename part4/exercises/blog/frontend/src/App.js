@@ -23,11 +23,12 @@ const LoginForm = ({username, password, handleLogin, handleFormFieldChange}) => 
   );
 }
 
-const Blogs = ({user, userBlogs}) => {
+const Blogs = ({user, userBlogs, handleLogout}) => {
   return(
     <div>
       <h2>blogs</h2>
       {user.name} (id: {user.id}) logged in.
+      <button onClick={() => handleLogout()}>logout</button>
       <h3>user's blogs:</h3>
       {userBlogs ? userBlogs.map((blog, index) => <p key={index}>{blog.title} {blog.author}</p>) : null}
     </div>
@@ -41,13 +42,18 @@ function App() {
   const [username, setUsername] = useState('jamil');
   const [password, setPassword] = useState('12');
 
-  // useEffect(async () => {
-  //   const getUserBlogs = async () => {
-  //     const userResponse = await userService.getUserById(user.id);
-  //     setUserBlogs(userResponse.blogs);
-  //   }
-  //   user && getUserBlogs();
-  // }, [user])
+  useEffect(() => {
+    const userLogin = JSON.parse(window.localStorage.getItem('loggedBlogUser'));
+    if (userLogin) {
+      setUser(userLogin);
+      
+      const getBlogs = async (userLogin) => {
+      const userData = await userService.getUserById(userLogin.id);
+        setUserBlogs(userData.blogs);
+      }
+      getBlogs(userLogin);
+    }
+  }, []);
   
   const handleFormFieldChange = (e) => {
     e.target.name === 'username' ? 
@@ -58,15 +64,17 @@ function App() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const user = await loginService.login({username: username, password: password});
-      const userData = await userService.getUserById(user.id);
-      setUser(user);
+      const userLogin = await loginService.login({username: username, password: password});
+      const userData = await userService.getUserById(userLogin.id);
+      setUser(userLogin);
       setUserBlogs(userData.blogs);
+      setUsername ('');
+      setPassword ('');
 
-      username = '';
-      password = '';
+      window.localStorage.setItem('loggedBlogUser', JSON.stringify(userLogin));
+
     } catch (exception) {
-      console.log('wrong creds');
+      console.log('wrong creds or', exception);
       //setErrorMessage('Wrong credentials')
       //setTimeout(() => {
         //setErrorMessage(null)
@@ -74,10 +82,16 @@ function App() {
     }
   }
 
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogUser');
+    setUser(null);
+    setUserBlogs(null);
+  }
+
   return (
     <div>
       {user 
-        ? <Blogs user={user} userBlogs={userBlogs} />
+        ? <Blogs user={user} userBlogs={userBlogs} handleLogout={handleLogout} />
         : <LoginForm username={username} password={password} handleLogin={handleLogin} handleFormFieldChange={handleFormFieldChange} />
       }
     </div>
