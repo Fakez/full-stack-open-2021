@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react'
 
 import loginService from './services/login'
 import userService from './services/user'
-
+import blogService from './services/blog'
 
 const LoginForm = ({username, password, handleLogin, handleFormFieldChange}) => {
   return (
@@ -35,6 +35,29 @@ const Blogs = ({user, userBlogs, handleLogout}) => {
   );
 }
 
+const BlogCreator = ({handleBlogCreation}) => {
+  return (
+    <div>
+      <h2>create new blog</h2>
+      <form onSubmit={handleBlogCreation}>
+        <div>
+          title: 
+          <input type='text' name='title' defaultValue='k' />
+        </div>
+        <div>
+          author: 
+          <input type='text' name='author' defaultValue='k' />
+        </div>
+        <div>
+          url: 
+          <input type='text' name='url' defaultValue='k' />
+        </div>
+        <button type='sumit'>Login</button>
+      </form>
+        </div>
+  )
+}
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -46,11 +69,13 @@ function App() {
     const userLogin = JSON.parse(window.localStorage.getItem('loggedBlogUser'));
     if (userLogin) {
       setUser(userLogin);
-      
+      blogService.setToken(userLogin.token);
+
       const getBlogs = async (userLogin) => {
       const userData = await userService.getUserById(userLogin.id);
         setUserBlogs(userData.blogs);
       }
+
       getBlogs(userLogin);
     }
   }, []);
@@ -67,6 +92,7 @@ function App() {
       const userLogin = await loginService.login({username: username, password: password});
       const userData = await userService.getUserById(userLogin.id);
       setUser(userLogin);
+      blogService.setToken(userLogin.token);
       setUserBlogs(userData.blogs);
       setUsername ('');
       setPassword ('');
@@ -88,10 +114,26 @@ function App() {
     setUserBlogs(null);
   }
 
+  const handleBlogCreation = async (e) => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    const newObject = {
+      'title': data.get('title'), 
+      'author': data.get('author'),
+      'url': data.get('url')
+    }
+    const newBlog = await blogService.createBlog(newObject);
+    setUserBlogs(userBlogs.concat(newBlog));
+    //console.log(newBlog)
+  }
+
   return (
     <div>
       {user 
-        ? <Blogs user={user} userBlogs={userBlogs} handleLogout={handleLogout} />
+        ? <>
+            <Blogs user={user} userBlogs={userBlogs} handleLogout={handleLogout} />
+            <BlogCreator handleBlogCreation={handleBlogCreation} />
+          </>
         : <LoginForm username={username} password={password} handleLogin={handleLogin} handleFormFieldChange={handleFormFieldChange} />
       }
     </div>
