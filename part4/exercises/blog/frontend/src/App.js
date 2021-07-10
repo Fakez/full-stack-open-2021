@@ -12,9 +12,6 @@ import blogService from './services/blog'
 
 
 
-
-
-
 function App() {
   const [user, setUser] = useState(null);
   const [userBlogs, setUserBlogs] = useState()
@@ -33,7 +30,7 @@ function App() {
 
       const getBlogs = async (userLogin) => {
       const userData = await userService.getUserById(userLogin.id);
-        setUserBlogs(userData.blogs);
+        setUserBlogs(userData.blogs.sort((a, b) => b.likes - a.likes));
       }
 
       getBlogs(userLogin);
@@ -53,7 +50,7 @@ function App() {
       const userData = await userService.getUserById(userLogin.id);
       setUser(userLogin);
       blogService.setToken(userLogin.token);
-      setUserBlogs(userData.blogs);
+      setUserBlogs(userData.blogs.sort((a, b) => b.likes - a.likes));
       setUsername ('');
       setPassword ('');
 
@@ -84,7 +81,8 @@ function App() {
     const newObject = {
       'title': data.get('title'), 
       'author': data.get('author'),
-      'url': data.get('url')
+      'url': data.get('url'),
+      'likes': 0
     }
     const newBlog = await blogService.createBlog(newObject);
 
@@ -98,6 +96,7 @@ function App() {
         setMessageType(null)
       }, 2000)
   }
+
 
   return (
     <div>

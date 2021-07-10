@@ -27,14 +27,11 @@ const BlogDetails = ({id}) => {
   }
 
   const handleBlogLike = async (blogDetail) => {
-    let likes = blogDetail.likes;
-    if (!likes) {likes = 0};
-
     const updatedBlog = {
       title: blogDetail.title,
       author: blogDetail.author,
       url: blogDetail.url,
-      likes: likes + 1,
+      likes: blogDetail.likes + 1,
     }
 
     const blog = await blogService.updateBlog(blogDetail.id, updatedBlog);
@@ -51,7 +48,7 @@ const BlogDetails = ({id}) => {
         <p>author: {blogDetail.author}</p>
         <p>url: {blogDetail.url}</p>
         <p>likes: 
-          {blogDetail.likes ? blogDetail.likes : '0'} 
+          {blogDetail.likes} 
           <button onClick={() => handleBlogLike(blogDetail)} style={buttonStyle}>like</button>
         </p>
       </div> : ''}
