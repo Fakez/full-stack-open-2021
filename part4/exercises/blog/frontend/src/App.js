@@ -1,8 +1,42 @@
-import {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef, useImperativeHandle } from 'react'
+
+import Message from './components/Message'
+import BlogCreator from './components/BlogCreator'
+import Blogs from './components/Blogs'
 
 import loginService from './services/login'
 import userService from './services/user'
 import blogService from './services/blog'
+
+const Togglable = React.forwardRef((props, ref) => {
+  const [visible, setVisible] = useState(false);
+
+  const hideWhenVisible = {display: visible ? 'none' : ''};
+  const showWhenVisible = {display: visible ? '' : 'none'};
+
+  const toggleVisibility = () => {
+    setVisible(!visible);
+  }
+
+  useImperativeHandle(ref, () => {
+    return {
+      toggleVisibility
+    }
+  })
+
+  return (
+    <div>
+      <div style={hideWhenVisible}>
+        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+      </div>
+      <div style={showWhenVisible}>
+        {props.children}
+        <button onClick={toggleVisibility}>cancel</button>
+      </div>
+    </div>
+  );
+
+});
 
 const LoginForm = ({username, password, handleLogin, handleFormFieldChange}) => {
   return (
@@ -23,62 +57,16 @@ const LoginForm = ({username, password, handleLogin, handleFormFieldChange}) => 
   );
 }
 
-const Blogs = ({user, userBlogs, handleLogout}) => {
-  return(
-    <div>
-      <h2>blogs</h2>
-      {user.name} (id: {user.id}) logged in.
-      <button onClick={() => handleLogout()}>logout</button>
-      <h3>user's blogs:</h3>
-      {userBlogs ? userBlogs.map((blog, index) => <p key={index}>{blog.title} {blog.author}</p>) : null}
-    </div>
-  );
-}
-
-const BlogCreator = ({handleBlogCreation}) => {
-  return (
-    <div>
-      <h2>create new blog</h2>
-      <form onSubmit={handleBlogCreation}>
-        <div>
-          title: 
-          <input type='text' name='title' defaultValue='k' />
-        </div>
-        <div>
-          author: 
-          <input type='text' name='author' defaultValue='k' />
-        </div>
-        <div>
-          url: 
-          <input type='text' name='url' defaultValue='k' />
-        </div>
-        <button type='sumit'>Login</button>
-      </form>
-        </div>
-  )
-}
-
-const Message = ({messageType, messageText}) => {
-  let style = {color:'green'};
-  if (messageType == 'error') {
-    style = {color:'red'};
-  }
-
-  return (
-    <div style={style}>
-      {messageText}
-    </div>
-  )
-}
-
 
 function App() {
   const [user, setUser] = useState(null);
   const [userBlogs, setUserBlogs] = useState()
   const [username, setUsername] = useState('jamil');
   const [password, setPassword] = useState('12');
-  const [messageType, setMessageType] = useState(null)
-  const [messageText, setMessageText] = useState(null)
+  const [messageType, setMessageType] = useState(null);
+  const [messageText, setMessageText] = useState(null);
+  const blogFormRef = useRef();
+  const loginFormRef = useRef();
 
   useEffect(() => {
     const userLogin = JSON.parse(window.localStorage.getItem('loggedBlogUser'));
@@ -147,7 +135,7 @@ function App() {
 
     setMessageText(`new blog ${newBlog.title} by ${newBlog.author} has been added`);
     setMessageType('success')
-
+    blogFormRef.current.toggleVisibility();
     setTimeout(() => {
         setMessageText(null)
         setMessageType(null)
@@ -160,10 +148,14 @@ function App() {
       {user 
         ? <>
             <Blogs user={user} userBlogs={userBlogs} handleLogout={handleLogout} />
-            <BlogCreator handleBlogCreation={handleBlogCreation} />
+            <Togglable buttonLabel='create blog' ref={blogFormRef}>
+              <BlogCreator handleBlogCreation={handleBlogCreation} />
+            </Togglable>
           </>
         : <>
-            <LoginForm username={username} password={password} handleLogin={handleLogin} handleFormFieldChange={handleFormFieldChange} />
+            <Togglable buttonLabel='LOGIN' ref={loginFormRef}>
+              <LoginForm username={username} password={password} handleLogin={handleLogin} handleFormFieldChange={handleFormFieldChange} />
+            </Togglable>
           </>
       }
     </div>
