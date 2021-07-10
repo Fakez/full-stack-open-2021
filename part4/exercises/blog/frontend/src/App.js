@@ -58,12 +58,27 @@ const BlogCreator = ({handleBlogCreation}) => {
   )
 }
 
+const Message = ({messageType, messageText}) => {
+  let style = {color:'green'};
+  if (messageType == 'error') {
+    style = {color:'red'};
+  }
+
+  return (
+    <div style={style}>
+      {messageText}
+    </div>
+  )
+}
+
 
 function App() {
   const [user, setUser] = useState(null);
   const [userBlogs, setUserBlogs] = useState()
   const [username, setUsername] = useState('jamil');
   const [password, setPassword] = useState('12');
+  const [messageType, setMessageType] = useState(null)
+  const [messageText, setMessageText] = useState(null)
 
   useEffect(() => {
     const userLogin = JSON.parse(window.localStorage.getItem('loggedBlogUser'));
@@ -101,10 +116,14 @@ function App() {
 
     } catch (exception) {
       console.log('wrong creds or', exception);
-      //setErrorMessage('Wrong credentials')
-      //setTimeout(() => {
-        //setErrorMessage(null)
-      //}, 5000)
+
+      setMessageText('Wrong credentials')
+      setMessageType('error')
+
+      setTimeout(() => {
+        setMessageText(null)
+        setMessageType(null)
+      }, 2000)
     }
   }
 
@@ -123,18 +142,29 @@ function App() {
       'url': data.get('url')
     }
     const newBlog = await blogService.createBlog(newObject);
+
     setUserBlogs(userBlogs.concat(newBlog));
-    //console.log(newBlog)
+
+    setMessageText(`new blog ${newBlog.title} by ${newBlog.author} has been added`);
+    setMessageType('success')
+
+    setTimeout(() => {
+        setMessageText(null)
+        setMessageType(null)
+      }, 2000)
   }
 
   return (
     <div>
+      <Message messageType={messageType} messageText={messageText} />
       {user 
         ? <>
             <Blogs user={user} userBlogs={userBlogs} handleLogout={handleLogout} />
             <BlogCreator handleBlogCreation={handleBlogCreation} />
           </>
-        : <LoginForm username={username} password={password} handleLogin={handleLogin} handleFormFieldChange={handleFormFieldChange} />
+        : <>
+            <LoginForm username={username} password={password} handleLogin={handleLogin} handleFormFieldChange={handleFormFieldChange} />
+          </>
       }
     </div>
   );
