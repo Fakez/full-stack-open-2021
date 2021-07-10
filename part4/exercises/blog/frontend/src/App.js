@@ -1,5 +1,7 @@
-import React, {useState, useEffect, useRef, useImperativeHandle } from 'react'
+import {useState, useEffect, useRef } from 'react'
 
+import Togglable from './components/Togglable'
+import LoginForm from './components/LoginForm'
 import Message from './components/Message'
 import BlogCreator from './components/BlogCreator'
 import Blogs from './components/Blogs'
@@ -8,61 +10,16 @@ import loginService from './services/login'
 import userService from './services/user'
 import blogService from './services/blog'
 
-const Togglable = React.forwardRef((props, ref) => {
-  const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = {display: visible ? 'none' : ''};
-  const showWhenVisible = {display: visible ? '' : 'none'};
 
-  const toggleVisibility = () => {
-    setVisible(!visible);
-  }
 
-  useImperativeHandle(ref, () => {
-    return {
-      toggleVisibility
-    }
-  })
-
-  return (
-    <div>
-      <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
-      </div>
-      <div style={showWhenVisible}>
-        {props.children}
-        <button onClick={toggleVisibility}>cancel</button>
-      </div>
-    </div>
-  );
-
-});
-
-const LoginForm = ({username, password, handleLogin, handleFormFieldChange}) => {
-  return (
-    <div>
-      <h2>log in to app</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input type='text' defaultValue={username} name='username' onChange={handleFormFieldChange} />
-        </div>
-        <div>
-          password
-          <input type='text' defaultValue={password} name='password' onChange={handleFormFieldChange} />
-        </div>
-        <button type='sumit'>Login</button>
-      </form>
-    </div>
-  );
-}
 
 
 function App() {
   const [user, setUser] = useState(null);
   const [userBlogs, setUserBlogs] = useState()
   const [username, setUsername] = useState('jamil');
-  const [password, setPassword] = useState('12');
+  const [password, setPassword] = useState('123');
   const [messageType, setMessageType] = useState(null);
   const [messageText, setMessageText] = useState(null);
   const blogFormRef = useRef();
