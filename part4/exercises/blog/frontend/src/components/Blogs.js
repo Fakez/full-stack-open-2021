@@ -119,7 +119,7 @@ const Blogs = ({user, handleLogout}) => {
         <h3>user's blogs:</h3>
         {userBlogs ? [userBlogs.map((blog, index) => { return (
             <div key={index} style={{ border:'1px solid green'}}>
-              <span>{blog.title} {blog.author}</span>
+              <span>{blog.title} | {blog.author}</span>
               <BlogDetails id={blog.id} handleBlogDelete={handleBlogDelete} />
             </div>
             
