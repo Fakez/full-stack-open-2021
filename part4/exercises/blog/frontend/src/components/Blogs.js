@@ -9,6 +9,10 @@ const BlogDetails = ({id}) => {
   const [blogDetail, setBlogDetail] = useState()
   const [show, setShow] = useState(false);
 
+  const buttonStyle = {
+    color:'blue'
+  }
+
   useEffect(() => {
     const getBlogDetails = async () => {
       const blog = await blogService.getBlog(id);
@@ -22,16 +26,34 @@ const BlogDetails = ({id}) => {
     setShow(!show);
   }
 
+  const handleBlogLike = async (blogDetail) => {
+    let likes = blogDetail.likes;
+    if (!likes) {likes = 0};
+
+    const updatedBlog = {
+      title: blogDetail.title,
+      author: blogDetail.author,
+      url: blogDetail.url,
+      likes: likes + 1,
+    }
+
+    const blog = await blogService.updateBlog(blogDetail.id, updatedBlog);
+    blog && setBlogDetail(blog);
+  }
+
   return (
     <> 
-    <button onClick={toggleShow}>{show ? 'hide' : 'show'}</button>
+    <button onClick={toggleShow} style={buttonStyle}>{show ? 'hide' : 'show'}</button>
     {blogDetail && show ?
       <div style={{display:'block'}}>
         <p>id: {blogDetail.id}</p>
         <p>title: {blogDetail.title}</p>
         <p>author: {blogDetail.author}</p>
         <p>url: {blogDetail.url}</p>
-        <p>likes: {blogDetail.likes ? blogDetail.likes : '0'} <button>like</button></p>
+        <p>likes: 
+          {blogDetail.likes ? blogDetail.likes : '0'} 
+          <button onClick={() => handleBlogLike(blogDetail)} style={buttonStyle}>like</button>
+        </p>
       </div> : ''}
     </>
   )
