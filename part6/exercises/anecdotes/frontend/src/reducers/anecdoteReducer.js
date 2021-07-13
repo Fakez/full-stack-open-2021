@@ -29,8 +29,14 @@ const reducer = (state = initialState, action) => {
       const anecToChange = state.find(a => a.id === id);
       const changedAnec = {...anecToChange, votes: anecToChange.votes += 1};
       return(state.map(anec => anec.id !== id ? anec : changedAnec));
-
-      //return {...state, votes: state.votes++};
+    case 'CREATE':
+      const newAnecdote = {
+        content: action.data.content,
+        id: getId(),
+        votes: 0
+      }
+      console.log('new', newAnecdote)
+      return([...state, newAnecdote]);
     default: return state;
   }
 }
