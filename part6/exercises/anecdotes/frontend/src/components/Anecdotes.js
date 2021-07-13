@@ -33,7 +33,11 @@ const Anecdotes = () => {
 
     return (
         anecdotes.map((anecdote, index) =>
-            <Anecdote anecdote={anecdote} index={index} handleClick={() => handleVoteClick(anecdote)} />
+            <Anecdote 
+            key={anecdote.id} 
+            anecdote={anecdote} 
+            index={index} 
+            handleClick={() => handleVoteClick(anecdote)} />
         )
     )
 }
