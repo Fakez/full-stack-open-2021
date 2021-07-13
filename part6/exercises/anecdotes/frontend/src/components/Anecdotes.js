@@ -18,7 +18,7 @@ const Anecdote = ({anecdote, index, handleClick}) => {
 
 const Anecdotes = () => {
     const dispatch = useDispatch();
-    const anecdotes = useSelector(state => state)
+    const anecdotes = useSelector(state => state.anecdotes)
 
     return (
         anecdotes.map((anecdote, index) =>
