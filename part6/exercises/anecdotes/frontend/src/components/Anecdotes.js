@@ -19,7 +19,11 @@ const Anecdote = ({anecdote, index, handleClick}) => {
 
 const Anecdotes = () => {
     const dispatch = useDispatch();
-    const anecdotes = useSelector(state => state.anecdotes)
+    let anecdotes = useSelector(state => state.anecdotes)
+    const filter = useSelector(state => state.filter)
+    if (filter) {
+        anecdotes = anecdotes.filter(a => a.content.toLowerCase().includes(filter.toLowerCase()))
+    }
 
     const handleVoteClick = (anecdote) => {
         dispatch(voteOn(anecdote.id));
