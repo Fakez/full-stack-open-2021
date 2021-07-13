@@ -28,9 +28,9 @@ const App = () => {
   return (
     <div>
       <h2>Anecdotes</h2>
-      {anecdotes.map(anecdote =>
+      {anecdotes.map((anecdote, index) =>
         <div key={anecdote.id}>
-          <div>{anecdote.content}</div>
+          <div>{index + 1}. {anecdote.content}</div>
           <div>
             has {anecdote.votes}
             <button onClick={() => vote(anecdote.id)}>vote</button>

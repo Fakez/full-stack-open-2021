@@ -28,7 +28,7 @@ const reducer = (state = initialState, action) => {
       const id = action.data.id;
       const anecToChange = state.find(a => a.id === id);
       const changedAnec = {...anecToChange, votes: anecToChange.votes += 1};
-      return(state.map(anec => anec.id !== id ? anec : changedAnec));
+      return(state.map(anec => anec.id !== id ? anec : changedAnec).sort((a,b) => b.votes - a.votes));
     case 'CREATE':
       const newAnecdote = {
         content: action.data.content,
@@ -37,7 +37,7 @@ const reducer = (state = initialState, action) => {
       }
       console.log('new', newAnecdote)
       return([...state, newAnecdote]);
-    default: return state;
+    default: return state.sort((a,b) => b.votes - a.votes);
   }
 }
 
