@@ -33,17 +33,20 @@ export const hideNotification = () => {
 }
 
 export const setNotification = (notificationMessage, time) => {
+
     return dispatch => {
         dispatch ({
             type: 'SET',
             data: notificationMessage
         })
+
         setTimeout(() => {
             dispatch ({ 
                 type: 'SET',
                 data: null
             })
         }, time * 1000);
+
     }
 }
 

@@ -19,8 +19,9 @@ const App = () => {
     <div>
       <h2>Anecdotes</h2>
       <Filter />
-      <Notification />
       <Anecdotes />
+      <Notification />
+
       <NewAnecdote />
       
     </div>
