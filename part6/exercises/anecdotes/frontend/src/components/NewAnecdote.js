@@ -12,12 +12,9 @@ const NewAnecdote = () => {
         e.preventDefault();
         const anecdoteContent = e.target.content.value;
         e.target.content.value = '';
-        anecdoteService.create(anecdoteContent)
-        .then(createdAnecdote => {
-            dispatch(createAnecdote(createdAnecdote));
-            dispatch(showNotification(`you created '${createdAnecdote.content}'`));
-            setTimeout(() => dispatch(hideNotification()), 5000);
-        })
+        dispatch(createAnecdote(anecdoteContent))
+        // dispatch(showNotification(`you created '${createdAnecdote.content}'`));
+        // setTimeout(() => dispatch(hideNotification()), 5000);
         
 
     }
