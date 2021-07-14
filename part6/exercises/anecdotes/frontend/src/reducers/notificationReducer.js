@@ -12,6 +12,8 @@ const notificationReducer = (state = null, action) => {
             return action.data.notificationContent;
         case 'HIDE':
             return null;
+        case 'SET':
+            return action.data;
         default: return state;
     }
 }
@@ -27,6 +29,21 @@ export const hideNotification = () => {
     return {
         type: 'HIDE',
         data: null
+    }
+}
+
+export const setNotification = (notificationMessage, time) => {
+    return dispatch => {
+        dispatch ({
+            type: 'SET',
+            data: notificationMessage
+        })
+        setTimeout(() => {
+            dispatch ({ 
+                type: 'SET',
+                data: null
+            })
+        }, time * 1000);
     }
 }
 
