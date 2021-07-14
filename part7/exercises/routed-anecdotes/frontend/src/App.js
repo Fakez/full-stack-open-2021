@@ -1,20 +1,17 @@
 import React, { useState } from 'react'
 import {
   BrowserRouter as Router,
-  Switch, Route, Link, useParams
+  Switch, Route, Link, useParams, useHistory
 } from "react-router-dom"
 
-const Menu = () => {
-  const padding = {
-    paddingRight: 5
-  }
+import About from './components/About'
+import Footer from './components/Footer'
+import Menu from './components/Menu'
+
+const Notification = ({message}) => {
+  if (!message) return null;
   return (
-    <div>
-      <Link to='/' style={padding}>home</Link>
-      <Link to='/anecdotes' style={padding}>anecdotes</Link>
-      <Link to='/create' style={padding}>create new</Link>
-      <Link to='/about' style={padding}>about</Link>
-    </div>
+    <div>{message}</div>
   )
 }
 
@@ -43,32 +40,13 @@ const AnecdoteList = ({ anecdotes }) => (
   </div>
 )
 
-const About = () => (
-  <div>
-    <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
 
-    <em>An anecdote is a brief, revealing account of an individual person or an incident.
-      Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
-      such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
-      An anecdote is "a story with a point."</em>
-
-    <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
-  </div>
-)
-
-const Footer = () => (
-  <div>
-    Anecdote app for <a href='https://courses.helsinki.fi/fi/tkt21009'>Full Stack -websovelluskehitys</a>.
-
-    See <a href='https://github.com/fullstack-hy/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js</a> for the source code.
-  </div>
-)
 
 const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const history = useHistory()
 
 
   const handleSubmit = (e) => {
@@ -79,6 +57,12 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.setMessage(`anecdote '${content}' created`);
+    setTimeout(() => {
+      props.setMessage(null);
+    }, 2000);
+    history.push('/anecdotes')
+
   }
 
   return (
@@ -123,6 +107,7 @@ const App = () => {
   ])
 
   const [notification, setNotification] = useState('')
+  const [message, setMessage] = useState(null);
 
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
@@ -148,7 +133,7 @@ const App = () => {
       <h1>Software anecdotes</h1>
       <Router>
         <Menu />
-        
+        <Notification message={message} />
         <Switch>
           <Route path='/anecdotes/:id'>
             <Anecdote anecdotes={anecdotes} />
@@ -160,7 +145,7 @@ const App = () => {
             <About />
           </Route>
           <Route path='/create'>
-            <CreateNew addNew={addNew} />
+            <CreateNew addNew={addNew} setMessage={setMessage} />
           </Route>
           
 
