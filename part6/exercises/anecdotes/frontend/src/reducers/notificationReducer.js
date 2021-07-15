@@ -6,6 +6,7 @@ const anecdotesAtStart = [
 const notificationReducer = (state = null, action) => {
     console.log('state now: ', state)
     console.log('action', action.type)
+    let timerID;
 
     switch (action.type) {
         case 'SHOW':
