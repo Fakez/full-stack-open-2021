@@ -11,8 +11,8 @@ app.get('/hello', (_req, res) => {
 });
 
 app.get('/bmi', (req, res) => {
-    const weight = req.query.weight
-    const height = req.query.height
+    const weight:number = Number(req.query.weight);
+    const height:number = Number(req.query.height);
 
     const response = {
         weight: weight,
