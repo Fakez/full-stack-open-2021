@@ -1,0 +1,6 @@
+ initialise our tsconfig.json:
+    npm run tsc -- --init
+
+create production build:
+   npm run tsc
+    
