@@ -6,7 +6,12 @@ import CoursePart from "./CoursePart";
 const Content = ({courseParts}: {courseParts: CoursePartType[]}) => {
     return (
       <div>
-        {courseParts.map((part,idx) => <CoursePart key={idx} name={part.name} exerciseCount={part.exerciseCount} />)}
+        {courseParts.map((part,idx) => <CoursePart 
+        key={idx} 
+        name={part.name} 
+        exerciseCount={part.exerciseCount} 
+        type={part.type} 
+        />)}
       </div>
     )
 }
