@@ -1,37 +1,7 @@
 import React from 'react';
-
-const Header = ({courseName}: {courseName: string}) => {
-  return (
-    <h1>{courseName}</h1>
-  )
-}
-
-interface CoursePart {
-  name: string;
-  exerciseCount: number;
-}
-
-const Content = ({courseParts}: {courseParts: CoursePart[]}) => {
-  return (
-    <div>
-      {courseParts.map((part,idx) => <CoursePart key={idx} name={part.name} exerciseCount={part.exerciseCount} />)}
-    </div>
-  )
-}
-
-const CoursePart = ({name, exerciseCount}: CoursePart) => {
-  return (
-    <p>{name} {exerciseCount}</p>)
-}
-
-const Total = ({courseParts}: {courseParts: CoursePart[]}) => {
-  return (
-    <p>
-      Number of exercises{" "}
-      {courseParts.reduce((carry, part) => carry + part.exerciseCount, 0)}
-  </p>
-  )
-}
+import Header from './components/Header'
+import Content from './components/Content'
+import Total from './components/Total'
 
 const App = () => {
   const courseName = "Half Stack application development";
