@@ -6,15 +6,19 @@ export interface DiagnoseEntry {
 
 export type Gender = 'male' | 'female'
 
-export type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn'>;
+export type NonSensitivePatientEntry = Omit<PatientEntry, 'ssn' | 'entries' >;
+
+export interface Entry {
+}
 
 export interface PatientEntry {
   id: string;
   name: string;
-  dateOfBirth: string;
   ssn: string;
+  occupation: string;
   gender: Gender;
-  occupation: string
+  dateOfBirth: string;
+  entries: Entry[]
 }
 
 export type NewPatientEntry= Omit<PatientEntry, 'id'>;
