@@ -1,5 +1,9 @@
+
 import { State } from "./state";
 import { Patient } from "../types";
+
+//import patientService from '../services/patients'
+
 
 export type Action =
   | {
@@ -36,3 +40,7 @@ export const reducer = (state: State, action: Action): State => {
       return state;
   }
 };
+
+// export const setPatientList = async (patientListFromApi: Patient[]) => {
+//   dispatch({ type: "SET_PATIENT_LIST", payload: patientListFromApi });
+// };
