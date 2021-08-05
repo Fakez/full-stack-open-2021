@@ -2,7 +2,7 @@ import { PatientEntry }  from '../types'
 
 const patients: PatientEntry[] = [
     {
-        "id": "d2773336-f723-11e9-8f0b-362b9e155667",
+        "id": "1",
         "name": "John McClane",
         "dateOfBirth": "1986-07-09",
         "ssn": "090786-122X",
@@ -11,7 +11,7 @@ const patients: PatientEntry[] = [
         "entries": []
     },
     {
-        "id": "d2773598-f723-11e9-8f0b-362b9e155667",
+        "id": "2",
         "name": "Martin Riggs",
         "dateOfBirth": "1979-01-30",
         "ssn": "300179-77A",
@@ -21,7 +21,7 @@ const patients: PatientEntry[] = [
 
     },
     {
-        "id": "d27736ec-f723-11e9-8f0b-362b9e155667",
+        "id": "3",
         "name": "Hans Gruber",
         "dateOfBirth": "1970-04-25",
         "ssn": "250470-555L",
@@ -31,7 +31,7 @@ const patients: PatientEntry[] = [
 
     },
     {
-        "id": "d2773822-f723-11e9-8f0b-362b9e155667",
+        "id": "4",
         "name": "Dana Scully",
         "dateOfBirth": "1974-01-05",
         "ssn": "050174-432N",
@@ -41,7 +41,7 @@ const patients: PatientEntry[] = [
 
     },
     {
-        "id": "d2773c6e-f723-11e9-8f0b-362b9e155667",
+        "id": "5",
         "name": "Matti Luukkainen",
         "dateOfBirth": "1971-04-09",
         "ssn": "090471-8890",
